@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DishWish - Random Meal Generator</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1 class="logo">🍽️ DishWish</h1>
+        <p class="tagline">Can't decide what to eat? Let us help!</p>
+      </header>
+
+      <div class="preferences-section">
+        <button class="preferences-btn" id="preferencesBtn">
+          <span class="preferences-icon">⚙️</span>
+          <span class="preferences-text">Preferences</span>
+        </button>
+      </div>
+
+      <main>
+        <div class="meal-card">
+          <div class="meal-emoji" id="mealEmoji">🤔</div>
+          <h2 class="meal-name" id="mealName">
+            Click the button to get a random meal suggestion!
+          </h2>
+          <p class="meal-description" id="mealDescription">
+            Perfect for indecisive dinner planners
+          </p>
+          <div class="meal-tags" id="mealTags"></div>
+          <div
+            class="recipe-link-container"
+            id="recipeLinkContainer"
+            style="display: none"
+          >
+            <a
+              class="recipe-link"
+              id="recipeLink"
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span class="recipe-icon">🔍</span>
+              <span class="recipe-text">Find Recipes</span>
+              <span class="recipe-source" id="recipeSource"></span>
+            </a>
+            <div class="additional-search-options" id="additionalSearchOptions">
+              <p class="search-help-text">More recipe sources:</p>
+              <div class="search-buttons">
+                <a
+                  class="search-btn"
+                  id="tiktokSearch"
+                  href="#"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span class="fab fa-tiktok"></span> TikTok
+                </a>
+                <a
+                  class="search-btn"
+                  id="youtubeSearch"
+                  href="#"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span class="fab fa-youtube"></span> YouTube
+                </a>
+                <a
+                  class="search-btn"
+                  id="foodNetworkSearch"
+                  href="#"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span>🍳</span> Food Network
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="generate-btn" id="generateBtn">
+          <span class="btn-text">Generate Random Meal</span>
+          <span class="btn-emoji">🎲</span>
+        </button>
+
+        <div class="stats">
+          <p>Meals generated: <span id="mealCount">0</span></p>
+        </div>
+      </main>
+
+      <footer>
+        <p>
+          &copy; 2024 DishWish - Making dinner decisions easier, one click at a
+          time!
+        </p>
+      </footer>
+    </div>
+
+    <!-- Preferences Modal -->
+    <div class="preferences-modal" id="preferencesModal">
+      <div class="preferences-overlay" id="preferencesOverlay"></div>
+      <div class="preferences-content">
+        <div class="preferences-header">
+          <h2 class="preferences-title">🍽️ Your Meal Preferences</h2>
+          <button class="preferences-close" id="preferencesClose">✕</button>
+        </div>
+
+        <div class="preferences-body">
+          <!-- Meal Type -->
+          <div class="preference-group">
+            <h3 class="preference-label">🍽️ Meal Type</h3>
+            <div class="preference-options">
+              <label class="preference-option">
+                <input type="radio" name="mealType" value="any" checked />
+                <span class="option-text">Any</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="mealType" value="breakfast" />
+                <span class="option-text">Breakfast</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="mealType" value="lunch" />
+                <span class="option-text">Lunch</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="mealType" value="dinner" />
+                <span class="option-text">Dinner</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="mealType" value="snack" />
+                <span class="option-text">Snack</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Dietary Preferences -->
+          <div class="preference-group">
+            <h3 class="preference-label">🥗 Dietary Preferences</h3>
+            <div class="preference-options">
+              <label class="preference-option">
+                <input type="radio" name="dietary" value="any" checked />
+                <span class="option-text">Any</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="dietary" value="vegetarian" />
+                <span class="option-text">Vegetarian</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="dietary" value="vegan" />
+                <span class="option-text">Vegan</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="dietary" value="meat-lovers" />
+                <span class="option-text">Meat Lovers</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="dietary" value="pescatarian" />
+                <span class="option-text">Pescatarian</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="dietary" value="gluten-free" />
+                <span class="option-text">Gluten-Free</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="dietary" value="keto" />
+                <span class="option-text">Keto/Low-Carb</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Cuisine Type -->
+          <div class="preference-group">
+            <h3 class="preference-label">🌍 Cuisine Type</h3>
+            <div class="preference-options">
+              <label class="preference-option">
+                <input type="radio" name="cuisine" value="any" checked />
+                <span class="option-text">Any</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="cuisine" value="italian" />
+                <span class="option-text">Italian</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="cuisine" value="chinese" />
+                <span class="option-text">Chinese</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="cuisine" value="japanese" />
+                <span class="option-text">Japanese</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="cuisine" value="thai" />
+                <span class="option-text">Thai</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="cuisine" value="mexican" />
+                <span class="option-text">Mexican</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="cuisine" value="american" />
+                <span class="option-text">American</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="cuisine" value="mediterranean" />
+                <span class="option-text">Mediterranean</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="cuisine" value="indian" />
+                <span class="option-text">Indian</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="cuisine" value="vietnamese" />
+                <span class="option-text">Vietnamese</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="cuisine" value="korean" />
+                <span class="option-text">Korean</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Dish Type (Dynamic based on cuisine) -->
+          <div
+            class="preference-group dish-type-section"
+            id="dishTypeSection"
+            style="display: none"
+          >
+            <h3 class="preference-label">🍽️ Dish Type</h3>
+            <div class="preference-options" id="dishTypeOptions">
+              <!-- Dynamically populated based on selected cuisine -->
+            </div>
+          </div>
+
+          <!-- Cooking Time -->
+          <div class="preference-group">
+            <h3 class="preference-label">⏱️ Cooking Time</h3>
+            <div class="preference-options">
+              <label class="preference-option">
+                <input type="radio" name="cookingTime" value="any" checked />
+                <span class="option-text">Any</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="cookingTime" value="quick" />
+                <span class="option-text">Quick (under 30 min)</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="cookingTime" value="medium" />
+                <span class="option-text">Medium (30-60 min)</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="cookingTime" value="long" />
+                <span class="option-text">Long (1+ hours)</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Spice Level -->
+          <div class="preference-group">
+            <h3 class="preference-label">🌶️ Spice Level</h3>
+            <div class="preference-options">
+              <label class="preference-option">
+                <input type="radio" name="spiceLevel" value="any" checked />
+                <span class="option-text">Any</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="spiceLevel" value="mild" />
+                <span class="option-text">Mild</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="spiceLevel" value="medium" />
+                <span class="option-text">Medium</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="spiceLevel" value="spicy" />
+                <span class="option-text">Spicy</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Difficulty -->
+          <div class="preference-group">
+            <h3 class="preference-label">👨‍🍳 Cooking Difficulty</h3>
+            <div class="preference-options">
+              <label class="preference-option">
+                <input type="radio" name="difficulty" value="any" checked />
+                <span class="option-text">Any</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="difficulty" value="easy" />
+                <span class="option-text">Easy</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="difficulty" value="medium" />
+                <span class="option-text">Medium</span>
+              </label>
+              <label class="preference-option">
+                <input type="radio" name="difficulty" value="hard" />
+                <span class="option-text">Hard</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="preferences-footer">
+          <button class="preferences-reset" id="preferencesReset">
+            <span class="reset-icon">🔄</span>
+            <span class="reset-text">Reset All</span>
+          </button>
+          <button class="preferences-apply" id="preferencesApply">
+            <span class="apply-icon">✓</span>
+            <span class="apply-text">Apply Preferences</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
