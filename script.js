@@ -4577,6 +4577,46 @@ const cuisineDishTypes = {
     ]
 };
 
+// TikTok Deep Linking Function
+function setupTikTokDeepLink(encodedQuery) {
+    // Remove any existing click handlers
+    const tiktokButton = document.getElementById('tiktokSearch');
+    if (!tiktokButton) return;
+    
+    // Remove href to prevent default behavior
+    tiktokButton.removeAttribute('href');
+    
+    // Add custom click handler for deep linking
+    tiktokButton.onclick = function(e) {
+        e.preventDefault();
+        
+        const appUrl = `tiktok://search?keyword=${encodedQuery}`;
+        const webUrl = `https://www.tiktok.com/search?q=${encodedQuery}`;
+        
+        // Try to open the app
+        const startTime = Date.now();
+        
+        // For mobile devices, try the app scheme first
+        if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            window.location.href = appUrl;
+            
+            // Fallback to web if app doesn't open within 1.5 seconds
+            setTimeout(() => {
+                // If we're still in the same window after 1.5s, the app probably didn't open
+                if (Date.now() - startTime < 2000) {
+                    window.open(webUrl, '_blank');
+                }
+            }, 1500);
+        } else {
+            // For desktop, just open web version
+            window.open(webUrl, '_blank');
+        }
+    };
+    
+    // Set a fallback href for right-click "open in new tab"
+    tiktokButton.href = `https://www.tiktok.com/search?q=${encodedQuery}`;
+}
+
 // Dynamic Dish Type Functions
 function showDishTypeSection(cuisineType) {
     const dishTypeSection = document.getElementById('dishTypeSection');
@@ -5034,7 +5074,10 @@ function displayMeal(meal) {
         recipeSource.textContent = `Search AllRecipes`;
         
         // Set up additional search options (searchQuery already contains "recipe")
-        tiktokSearch.href = `https://www.tiktok.com/search?q=${encodedQuery}`;
+        
+        // TikTok with deep linking - open app if available, otherwise web
+        setupTikTokDeepLink(encodedQuery);
+        
         youtubeSearch.href = `https://www.youtube.com/results?search_query=${encodedQuery}`;
         
         // Use Google site search for Food Network - much more reliable
