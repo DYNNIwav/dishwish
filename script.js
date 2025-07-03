@@ -4577,87 +4577,14 @@ const cuisineDishTypes = {
     ]
 };
 
-// TikTok Deep Linking Function with Smart Fallback
+// TikTok Deep Linking Function - Simple like YouTube  
 function setupTikTokDeepLink(encodedQuery) {
     const tiktokButton = document.getElementById('tiktokSearch');
     if (!tiktokButton) return;
     
-    // Remove href to prevent default behavior
-    tiktokButton.removeAttribute('href');
-    
-    // Add custom click handler for deep linking
-    tiktokButton.onclick = function(e) {
-        e.preventDefault();
-        
-        const rawQuery = decodeURIComponent(encodedQuery);
-        const webUrl = `https://www.tiktok.com/search?q=${encodedQuery}`;
-        
-        // For mobile devices, use smart approach
-        if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-            // Try to copy search term to clipboard for easy pasting in TikTok
-            copyToClipboard(rawQuery).then(() => {
-                // Open TikTok app (to main page since search deep link is unreliable)
-                window.location.href = 'tiktok://';
-                
-                // Show helpful notification
-                setTimeout(() => {
-                    showNotification(`🎵 Opening TikTok! Search term "${rawQuery}" copied to clipboard - just paste it in TikTok's search! 📋`, 'success');
-                }, 500);
-                
-                // Fallback to web if app doesn't open
-                setTimeout(() => {
-                    // If still in browser, app didn't open - use web version
-                    if (document.hasFocus()) {
-                        window.open(webUrl, '_blank');
-                        showNotification('🌐 Opened TikTok in browser instead!', 'info');
-                    }
-                }, 2000);
-            }).catch(() => {
-                // If clipboard fails, just open web version
-                window.open(webUrl, '_blank');
-                showNotification(`🔍 Search for "${rawQuery}" on TikTok!`, 'info');
-            });
-        } else {
-            // For desktop, just open web version
-            window.open(webUrl, '_blank');
-        }
-    };
-    
-    // Set a fallback href for right-click "open in new tab"
+    // Just use the regular TikTok web URL - mobile browsers will handle app redirection
+    const webUrl = `https://www.tiktok.com/search?q=${encodedQuery}`;
     tiktokButton.href = webUrl;
-}
-
-// Helper function to copy text to clipboard
-async function copyToClipboard(text) {
-    if (navigator.clipboard && window.isSecureContext) {
-        // Use modern Clipboard API if available
-        return navigator.clipboard.writeText(text);
-    } else {
-        // Fallback for older browsers
-        return new Promise((resolve, reject) => {
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            textArea.style.position = 'fixed';
-            textArea.style.left = '-999999px';
-            textArea.style.top = '-999999px';
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            
-            try {
-                const successful = document.execCommand('copy');
-                document.body.removeChild(textArea);
-                if (successful) {
-                    resolve();
-                } else {
-                    reject();
-                }
-            } catch (err) {
-                document.body.removeChild(textArea);
-                reject(err);
-            }
-        });
-    }
 }
 
 // Dynamic Dish Type Functions
