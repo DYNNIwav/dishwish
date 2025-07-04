@@ -5048,7 +5048,7 @@ function displayMeal(meal) {
         // Set up additional search options (searchQuery already contains "recipe")
         
         // TikTok - simple web URL like desktop
-        setupTikTokDeepLink(encodedQuery);
+        tiktokSearch.href = `https://www.tiktok.com/search?q=${encodedQuery}`;
         
         youtubeSearch.href = `https://www.youtube.com/results?search_query=${encodedQuery}`;
         
