@@ -4577,14 +4577,17 @@ const cuisineDishTypes = {
     ]
 };
 
-// TikTok Deep Linking Function - Simple like YouTube  
+// TikTok Function - Simple like your MacBook experience
 function setupTikTokDeepLink(encodedQuery) {
     const tiktokButton = document.getElementById('tiktokSearch');
     if (!tiktokButton) return;
     
-    // Just use the regular TikTok web URL - mobile browsers will handle app redirection
-    const webUrl = `https://www.tiktok.com/search?q=${encodedQuery}`;
-    tiktokButton.href = webUrl;
+    // Use the exact same approach that works on your MacBook
+    const tiktokUrl = `https://www.tiktok.com/search?q=${encodedQuery}`;
+    tiktokButton.href = tiktokUrl;
+    
+    // Let mobile browsers handle app detection naturally
+    // No special mobile logic needed - just like your desktop experience
 }
 
 // Dynamic Dish Type Functions
@@ -5045,7 +5048,7 @@ function displayMeal(meal) {
         
         // Set up additional search options (searchQuery already contains "recipe")
         
-        // TikTok with deep linking - open app if available, otherwise web
+        // TikTok - simple web URL like desktop
         setupTikTokDeepLink(encodedQuery);
         
         youtubeSearch.href = `https://www.youtube.com/results?search_query=${encodedQuery}`;
