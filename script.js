@@ -4577,17 +4577,58 @@ const cuisineDishTypes = {
     ]
 };
 
-// TikTok Function - Simple like your MacBook experience
+// TikTok Function - Enhanced mobile-friendly approach
 function setupTikTokDeepLink(encodedQuery) {
     const tiktokButton = document.getElementById('tiktokSearch');
     if (!tiktokButton) return;
     
-    // Use the exact same approach that works on your MacBook
-    const tiktokUrl = `https://www.tiktok.com/search?q=${encodedQuery}`;
-    tiktokButton.href = tiktokUrl;
+    // Remove the default href="#" and set up click handler
+    tiktokButton.removeAttribute('href');
     
-    // Let mobile browsers handle app detection naturally
-    // No special mobile logic needed - just like your desktop experience
+    // Clear any existing listeners
+    tiktokButton.onclick = null;
+    
+    // Add click handler that handles mobile better
+    tiktokButton.onclick = function(e) {
+        e.preventDefault();
+        
+        // Try multiple TikTok URL approaches for better mobile compatibility
+        const searchQuery = decodeURIComponent(encodedQuery);
+        
+        // First try: TikTok app scheme (if app is installed)
+        const tiktokAppUrl = `tiktok://search?q=${encodedQuery}`;
+        
+        // Second try: TikTok web with different format
+        const tiktokWebUrl = `https://www.tiktok.com/search?q=${encodedQuery}`;
+        
+        // Third try: TikTok discover page (more reliable on mobile)
+        const tiktokDiscoverUrl = `https://www.tiktok.com/discover?q=${encodedQuery}`;
+        
+        // Detect if we're on mobile
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        if (isMobile) {
+            // On mobile, try app first, then fallback to web
+            try {
+                // Try to open TikTok app
+                window.location.href = tiktokAppUrl;
+                
+                // If app doesn't open within 2 seconds, open web version
+                setTimeout(() => {
+                    window.open(tiktokWebUrl, '_blank');
+                }, 2000);
+            } catch (err) {
+                // If app scheme fails, open web version
+                window.open(tiktokWebUrl, '_blank');
+            }
+        } else {
+            // On desktop, just open web version
+            window.open(tiktokWebUrl, '_blank');
+        }
+        
+        console.log(`TikTok search: ${searchQuery}`);
+        return false;
+    };
 }
 
 // Dynamic Dish Type Functions
