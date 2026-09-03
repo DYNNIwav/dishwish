@@ -857,5 +857,11 @@
     updateNavButtons();
   }
 
-  document.addEventListener('DOMContentLoaded', init);
+  // Run immediately when the document is already parsed — the listener alone
+  // would never fire if this script is injected after DOMContentLoaded.
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();
