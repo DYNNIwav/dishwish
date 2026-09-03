@@ -1,0 +1,10 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor directories
+.vscode/
+.idea/
+
+# Dependencies / build output (this project needs none, but tooling drops them)
+node_modules/

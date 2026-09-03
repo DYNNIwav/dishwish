@@ -5,6 +5,20 @@
   box-sizing: border-box;
 }
 
+/* Visibility is driven by the `hidden` attribute; make it win over the
+   display rules below so markup and CSS cannot disagree. */
+[hidden] {
+  display: none !important;
+}
+
+:root {
+  --brand-start: #667eea;
+  --brand-end: #764ba2;
+  --brand-gradient: linear-gradient(45deg, #667eea, #764ba2);
+  --success-gradient: linear-gradient(45deg, #28a745, #20c997);
+  --focus-ring: #1a237e;
+}
+
 body {
   font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI",
     "Roboto", sans-serif;
@@ -257,11 +271,13 @@ header {
   border: 1px solid rgba(102, 126, 234, 0.2);
 }
 
-.search-btn:hover {
+.search-btn:hover,
+.search-btn:focus-visible {
   background: rgba(102, 126, 234, 0.2);
   transform: translateY(-1px);
   text-decoration: none;
-  color: whitesmoke;
+  color: #1a1a1a;
+  border-color: var(--brand-start);
 }
 
 .search-btn span {
@@ -270,7 +286,7 @@ header {
 
 /* Preferences Modal */
 .preferences-modal {
-  display: none;
+  display: block;
   position: fixed;
   top: 0;
   left: 0;
@@ -373,8 +389,34 @@ header {
   position: relative;
 }
 
+/* Visually hidden but still focusable and exposed to screen readers. */
 .preference-option input[type="radio"] {
-  display: none;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.preference-option input[type="radio"]:focus-visible + .option-text {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Combinations that would return no meals at all. */
+.preference-option--empty {
+  cursor: not-allowed;
+}
+
+.preference-option--empty .option-text {
+  opacity: 0.4;
+  text-decoration: line-through;
+}
+
+.preference-option--empty:hover .option-text {
+  border-color: #e0e0e0;
+  background: #f5f7fa;
 }
 
 .preference-option .option-text {
@@ -752,20 +794,18 @@ footer p {
 }
 
 /* Dynamic Dish Type Section Animation */
+/* Visibility is the `hidden` attribute's job, so this only handles the reveal.
+   The old max-height clip cut off cuisines with many dish types. */
 .dish-type-section {
   opacity: 0;
-  max-height: 0;
-  overflow: hidden;
   transform: translateY(-10px);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  margin-top: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  margin-top: 1rem;
 }
 
 .dish-type-section.show {
   opacity: 1;
-  max-height: 300px;
   transform: translateY(0);
-  margin-top: 1rem;
 }
 
 .dish-type-section .preference-options {
@@ -814,6 +854,125 @@ footer p {
 @keyframes slideInOption {
   to {
     opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Match counter in the modal footer */
+.preferences-footer {
+  flex-wrap: wrap;
+}
+
+.preferences-match-count {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555;
+  margin: 0;
+}
+
+.preferences-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+/* Toast notifications */
+.notification-region {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.notification {
+  background: var(--brand-start);
+  color: white;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  font-weight: 600;
+  font-size: 0.9rem;
+  max-width: min(320px, calc(100vw - 40px));
+  transform: translateX(110%);
+  transition: transform 0.3s ease;
+}
+
+.notification--success {
+  background: #1e7e34;
+}
+
+.notification--visible {
+  transform: translateX(0);
+}
+
+/* Locking the page behind the modal. `position: fixed` on iOS Safari would
+   scroll the page to the top, so only overflow is touched. */
+body.modal-open {
+  overflow: hidden;
+}
+
+/* Visible keyboard focus on every interactive element */
+.generate-btn:focus-visible,
+.preferences-btn:focus-visible,
+.preferences-close:focus-visible,
+.preferences-reset:focus-visible,
+.preferences-apply:focus-visible,
+.recipe-link:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+.preferences-close:focus-visible {
+  outline-color: white;
+}
+
+@media (max-width: 480px) {
+  .preferences-match-count {
+    width: 100%;
+    text-align: center;
+  }
+
+  .preferences-actions {
+    width: 100%;
+    flex-direction: column;
+    margin-left: 0;
+  }
+
+  .notification-region {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    align-items: stretch;
+  }
+}
+
+/* Respect the OS "reduce motion" setting: keep state changes, drop the
+   looping and sliding animation. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .meal-card:hover,
+  .generate-btn:hover,
+  .preferences-btn:hover,
+  .recipe-link:hover,
+  .search-btn:hover {
+    transform: none;
+  }
+
+  .notification {
     transform: translateX(0);
   }
 }
