@@ -1,0 +1,17 @@
+{
+  "name": "dishwish",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Random meal generator — vanilla HTML, CSS, and JavaScript with no build step.",
+  "license": "MIT",
+  "scripts": {
+    "check": "node tools/validate-meals.js",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "eslint": "^9.13.0",
+    "prettier": "^3.3.3"
+  }
+}

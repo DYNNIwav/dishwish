@@ -17,8 +17,21 @@ const ROOT = path.join(__dirname, '..');
 const meals = require(path.join(ROOT, 'data', 'meals.js'));
 const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 
-const REQUIRED_FIELDS = ['name', 'emoji', 'description', 'tags', 'searchQuery', 'fallbackUrl',
-  'mealType', 'dietary', 'cuisine', 'dishType', 'cookingTime', 'spiceLevel', 'difficulty'];
+const REQUIRED_FIELDS = [
+  'name',
+  'emoji',
+  'description',
+  'tags',
+  'searchQuery',
+  'fallbackUrl',
+  'mealType',
+  'dietary',
+  'cuisine',
+  'dishType',
+  'cookingTime',
+  'spiceLevel',
+  'difficulty',
+];
 const ARRAY_FIELDS = ['tags', 'mealType', 'dietary'];
 const MULTI_VALUE_KEYS = ['mealType', 'dietary'];
 
@@ -49,14 +62,17 @@ meals.forEach((meal, index) => {
   }
 });
 
-// --- every radio option in the UI can actually return a meal -----------------
+// --- every filter option in the UI can actually return a meal ----------------
+// Options are generated from the data-group/data-values pairs in index.html.
 const groups = {};
-for (const match of html.matchAll(/name="(\w+)"\s+value="([\w-]+)"/g)) {
-  (groups[match[1]] = groups[match[1]] || new Set()).add(match[2]);
+for (const match of html.matchAll(/data-group="(\w+)"\s+data-values="([^"]+)"/g)) {
+  groups[match[1]] = new Set(match[2].split(',').map((value) => value.trim()));
+}
+if (Object.keys(groups).length === 0) {
+  errors.push('No data-group/data-values filter groups found in index.html');
 }
 
 function matches(meal, key, value) {
-  if (value === 'any') return true;
   const field = meal[key];
   return MULTI_VALUE_KEYS.includes(key)
     ? Array.isArray(field) && field.includes(value)
@@ -65,7 +81,6 @@ function matches(meal, key, value) {
 
 Object.entries(groups).forEach(([key, values]) => {
   values.forEach((value) => {
-    if (value === 'any') return;
     const count = meals.filter((meal) => matches(meal, key, value)).length;
     if (count === 0) errors.push(`UI offers ${key}="${value}" but no meal has it`);
     else if (count < 3) warnings.push(`${key}="${value}" only matches ${count} meal(s)`);
@@ -75,8 +90,9 @@ Object.entries(groups).forEach(([key, values]) => {
 // --- values in the data that the UI never offers ------------------------------
 Object.keys(groups).forEach((key) => {
   if (key === 'dishType') return; // Dish types are generated from the data itself.
-  const used = new Set(meals.flatMap((meal) =>
-    Array.isArray(meal[key]) ? meal[key] : [meal[key]]));
+  const used = new Set(
+    meals.flatMap((meal) => (Array.isArray(meal[key]) ? meal[key] : [meal[key]]))
+  );
   used.forEach((value) => {
     if (!groups[key].has(value)) {
       warnings.push(`${key}="${value}" exists in the data but has no UI option (unreachable)`);
