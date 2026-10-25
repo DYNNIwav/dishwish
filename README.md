@@ -1,134 +1,164 @@
-# 🍽️ DishWish - Random Meal Generator
+# 🍽️ DishWish
 
-**DishWish** is a beautiful, modern web application that helps solve the age-old question: "What should we eat?" Perfect for indecisive dinner planners, couples who can't agree on meals, or anyone looking for culinary inspiration.
+A small, dependency-free web app that answers the age-old question: "What should
+we eat?" Built for indecisive dinner planners, and for two people who can't
+agree.
 
-## ✨ Features
+## ✨ What it does
 
-### 🎲 Random Meal Generation
+### 🎲 Pick a dish
 
-- **30+ diverse meals** from various cuisines and dietary preferences
-- **Smart algorithm** prevents the same meal from appearing twice in a row
-- **Instant suggestions** with beautiful animations and smooth transitions
-- **Recipe search links** to reliable cooking websites that always work
+- **322 dishes** across ten cuisines
+- Remembers the last 8 suggestions and avoids repeating them
+- Cooking time, difficulty, and spice shown on the card
+- Recipe searches on AllRecipes, TikTok, YouTube, and Food Network
+- Save dishes you like, step back through history, share a pick
+- <kbd>Space</kbd> rolls again
 
-### 🌍 Diverse Cuisine Options
+### 👥 Duo mode
 
-- **Italian**: Spaghetti Carbonara, Margherita Pizza, Chicken Parmigiana
-- **Asian**: Chicken Teriyaki, Pad Thai, Sushi Bowl, Beef Stir Fry, Chicken Curry
-- **Mexican**: Chicken Tacos, Beef Burrito, Vegetarian Quesadilla
-- **American**: Classic Cheeseburger, BBQ Ribs, Grilled Salmon, Caesar Salad
-- **Mediterranean**: Greek Gyros, Mediterranean Bowl, Chicken Shawarma
-- **Comfort Food**: Mac and Cheese, Chicken Soup, Beef Stew
-- **Healthy Options**: Quinoa Salad, Grilled Chicken Breast, Vegetable Stir Fry
-- **Breakfast/Brunch**: Pancakes, Avocado Toast, Eggs Benedict
-- **Seafood**: Fish and Chips, Shrimp Scampi, Crab Cakes
+One phone, two people. You each rate the same shuffled deck in private, then the
+app shows what you both said yes to. Nothing is stored — a round lives in memory
+and disappears when it closes.
 
-### 🏷️ Smart Meal Tags
+### 🎛️ Filters
 
-Each meal includes helpful tags for easy identification:
+Multi-select: **OR within a group, AND between groups**. So "Korean or
+Vietnamese" widens, and adding "Vegetarian" narrows. Nothing selected means no
+constraint.
 
-- **Cuisine Type**: Italian, Asian, Mexican, American, etc.
-- **Dietary**: Vegetarian, Gluten-Free, Healthy, Low-Carb
-- **Meal Type**: Breakfast, Brunch, Comfort Food, Quick
-- **Protein**: Chicken, Beef, Seafood, Vegetarian
+| Filter       | Options                                                                                        |
+| ------------ | ---------------------------------------------------------------------------------------------- |
+| Meal type    | Breakfast, Brunch, Lunch, Dinner, Snack                                                        |
+| Diet         | Vegetarian, Vegan, Meat Lovers, Pescatarian, Gluten-Free, Keto/Low-Carb                        |
+| Cuisine      | Italian, Chinese, Japanese, Thai, Korean, Vietnamese, Indian, Mexican, American, Mediterranean |
+| Dish type    | Built from the data for whichever cuisines you pick                                            |
+| Cooking time | Under 30 min, 30–60 min, 1 hour+                                                               |
+| Spice level  | Mild, Medium, Spicy                                                                            |
+| Difficulty   | Easy, Medium, Hard                                                                             |
 
-### 📖 Reliable Recipe Search
+A live match count updates as you choose, and any option that would leave you
+with zero dishes is struck through and disabled — so a filter combination can
+never dead-end. Active filters appear as chips you can click to remove.
 
-Smart search functionality connects you to trusted cooking websites:
+### 🌍 Cuisine coverage
 
-- **AllRecipes** - Primary search with community-tested recipes
-- **Google** - Comprehensive recipe search across the web
-- **YouTube** - Video tutorials and cooking demonstrations
-- **Food Network** - Professional chef recipes and techniques
+| Cuisine  | Dishes | Cuisine       | Dishes |
+| -------- | -----: | ------------- | -----: |
+| American |     76 | Japanese      |     20 |
+| Mexican  |     64 | Thai          |     20 |
+| Italian  |     43 | Indian        |     20 |
+| Chinese  |     23 | Mediterranean |     20 |
+| Korean   |     18 | Vietnamese    |     18 |
 
-No more broken links! Every search is guaranteed to work and provide relevant results.
+## 🚀 Getting started
 
-### 📱 Modern User Experience
+No build step. Clone the repo and open `index.html` — it works straight off the
+filesystem.
 
-- **Responsive Design**: Works perfectly on desktop, tablet, and mobile
-- **Beautiful Animations**: Smooth transitions and hover effects
-- **Keyboard Support**: Press Space or Enter to generate meals
-- **Progress Tracking**: Counts how many meals you've generated
-- **Local Storage**: Remembers your meal count between sessions
+```
+index.html          markup
+styles.css          design tokens + styles
+script.js           app wiring (entry point, loaded last)
+data/meals.js       meal database
+js/store.js         localStorage access
+js/filters.js       filtering + label vocabulary
+js/images.js        optional meal photos
+js/duo.js           duo mode
+tools/              maintenance scripts
+```
 
-### 🎉 Fun Easter Eggs
+The dev tooling (lint, format) is optional and needs Node:
 
-- Special messages appear after generating 10 and 25 meals
-- Spinning dice animation while generating
-- Bouncing food emojis
-- Smooth mobile scrolling
+```sh
+npm install
+npm run check         # validate the meal data
+npm run lint
+npm run format
+```
 
-## 🚀 Getting Started
+## 🌐 Third-party services
 
-### Simple Setup
+DishWish makes exactly two kinds of outbound request, and both are optional.
 
-1. Download all files (`index.html`, `styles.css`, `script.js`)
-2. Open `index.html` in any modern web browser
-3. Start generating random meals!
+**Recipe links.** Every "find recipes" button opens a _search URL_ on
+AllRecipes, TikTok, YouTube, or Google. The app never copies, scrapes, reframes,
+or republishes anyone's recipe content — it hands the query to their own search
+and gets out of the way. Brand names are used only to say where a link goes; no
+third-party logos are bundled.
 
-### No Installation Required
+**Meal photos** come from [TheMealDB](https://www.themealdb.com) and are
+hot-linked from their CDN. This is the one place the app pulls in third-party
+content rather than linking out to it.
 
-- Pure HTML, CSS, and JavaScript
-- No build process or dependencies
-- Works offline once loaded
-- Compatible with all modern browsers
+- `js/images.js` uses TheMealDB's documented free key (`1`), which they publish
+  for development. **Check their current terms before deploying publicly** and
+  swap in your own key — the constant is at the top of the file.
+- Photos can be turned off entirely with the 📷 button in the header. Off means
+  **no external requests at all**; the app falls back to emoji.
+- Lookups are cached in `localStorage` (hits for 30 days, misses for 1 day), and
+  after two consecutive network failures the lookup disables itself for the
+  session. The app is fully functional with photos unavailable.
 
-## 🎯 How to Use
+## 🍲 Adding meals
 
-1. **Open the app** in your web browser
-2. **Click "Generate Random Meal"** or press Space/Enter
-3. **Discover your meal suggestion** with description and tags
-4. **Click "Find Recipes"** to search for recipes on AllRecipes, or use the additional search options
-5. **Click again** for a new suggestion
-6. **Track your progress** with the meal counter
+Add an entry to `data/meals.js`. Every field is required — the filter treats a
+missing field as "never matches", which silently hides the dish from any
+filtered search:
 
-## 💡 Perfect For
+```js
+{
+  name: "Spaghetti Carbonara",
+  emoji: "🍝",
+  description: "Creamy pasta with eggs, cheese, pancetta, and black pepper",
+  tags: ["Italian", "Pasta", "Comfort Food"],
+  searchQuery: "spaghetti carbonara recipe",
+  fallbackUrl: "https://www.allrecipes.com/search?q=spaghetti+carbonara",
+  mealType: ["lunch", "dinner"],      // breakfast | brunch | lunch | dinner | snack
+  dietary: ["meat-lovers"],           // vegetarian | vegan | meat-lovers | pescatarian | gluten-free | keto
+  cuisine: "italian",
+  dishType: "pasta",
+  cookingTime: "medium",              // quick | medium | long
+  spiceLevel: "mild",                 // mild | medium | spicy
+  difficulty: "medium",               // easy | medium | hard
+},
+```
 
-- **Couples** who can't decide on dinner
-- **Families** looking for meal variety
-- **Individuals** wanting to try new cuisines
-- **Meal planning** and inspiration
-- **Breaking food routine** and trying new dishes
+New dish types appear in the UI automatically, but need a display name in
+`DISH_TYPE_LABELS` in `js/filters.js`.
 
-## 🔧 Technical Features
+Then check the data:
 
-- **Vanilla JavaScript** - No frameworks required
-- **CSS Grid & Flexbox** - Modern layout techniques
-- **CSS Gradients** - Beautiful visual effects
-- **LocalStorage** - Persistent data storage
-- **Responsive Design** - Mobile-first approach
-- **Accessibility** - Keyboard navigation support
+```sh
+node tools/validate-meals.js
+```
 
-## 📱 Browser Support
+It flags missing fields, duplicate dishes, filter options no dish can satisfy,
+and data values the UI never offers. CI runs it on every push.
 
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-- Mobile browsers (iOS Safari, Chrome Mobile)
+## ♿ Accessibility
 
-## 🌈 Design Philosophy
+- Every control is reachable and operable by keyboard
+- Dialogs use `role="dialog"`, trap focus, close on <kbd>Esc</kbd>, and return
+  focus sensibly — after applying filters, focus lands on the roll button so the
+  <kbd>Space</kbd> shortcut does what the hint says
+- New suggestions and toasts are announced through live regions
+- Light and dark themes, following the OS unless you choose one
+- Animations are disabled under `prefers-reduced-motion`
 
-DishWish follows modern web design principles:
+## 📱 Browser support
 
-- **Clean, minimal interface** focused on the core functionality
-- **Beautiful gradient backgrounds** and smooth animations
-- **Accessible color scheme** with good contrast
-- **Intuitive user interactions** with clear feedback
-- **Mobile-first responsive design**
+Chrome, Firefox, Safari, and Edge (current versions), plus iOS Safari and Chrome
+for Android.
 
 ## 🤝 Contributing
 
-Feel free to contribute by:
-
-- Adding more meal options to the database
-- Improving the UI/UX design
-- Adding new features (filters, favorites, etc.)
-- Fixing bugs or improving performance
+Pull requests welcome — more dishes, UI improvements, new filters, bug fixes.
+Run `npm run check && npm run lint && npm run format:check` before opening one.
 
 ## 📄 License
 
-This project is open source and available under the MIT License.
+MIT.
 
 ---
 
